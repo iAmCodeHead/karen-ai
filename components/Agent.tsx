@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { vapi } from "@/lib/vapi.sdk";
 import { interviewer } from "@/constants";
-import { createFeedback } from "@/lib/actions/general.action";
+import { createFeedback, updateGeneralFeedbackOverview } from "@/lib/actions/general.action";
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -26,6 +26,7 @@ const Agent = ({
   userId,
   interviewId,
   feedbackId,
+  interview_listId,
   type,
   questions,
 }: AgentProps) => {
@@ -97,6 +98,8 @@ const Agent = ({
         feedbackId,
       });
 
+      await updateGeneralFeedbackOverview(interview_listId);
+
       if (success && id) {
         router.push(`/interview/${interviewId}/feedback`);
       } else {
@@ -112,7 +115,7 @@ const Agent = ({
         handleGenerateFeedback(messages);
       }
     }
-  }, [messages, callStatus, feedbackId, interviewId, router, type, userId]);
+  }, [messages, callStatus, feedbackId, interviewId, router, type, userId, interview_listId]);
 
   const handleCall = async () => {
     setCallStatus(CallStatus.CONNECTING);

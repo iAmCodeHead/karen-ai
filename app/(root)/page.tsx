@@ -2,32 +2,40 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
-import InterviewCard from "@/components/InterviewCard";
 
 import { getCurrentUser } from "@/lib/actions/auth.action";
 import {
   getInterviewsByUserId,
+  getInterviewsListByUserId,
   getLatestInterviews,
 } from "@/lib/actions/general.action";
+import InterviewList from "@/components/InterviewList";
 
 async function Home() {
+  
   const user = await getCurrentUser();
+
   let hasPastInterviews = false;
   let hasUpcomingInterviews = false;
   let userInterviews: Interview[] = [];
   let allInterview: Interview[] = [];
-  
+  let interviewlists: InterviewList[] = [];
+
   if (user) {
-    const [uI, aI] = await Promise.all([
+    const [uI, aI, pIs] = await Promise.all([
       getInterviewsByUserId(user.id),
       getLatestInterviews({ userId: user.id }),
+      getInterviewsListByUserId(user.id),
     ]);
     userInterviews = uI;
     allInterview = aI;
+    interviewlists = pIs;
   }
 
   hasPastInterviews = userInterviews.length > 0;
   hasUpcomingInterviews = allInterview.length > 0;
+
+  console.log(hasPastInterviews, hasUpcomingInterviews, interviewlists);
 
   return (
     <>
@@ -39,7 +47,7 @@ async function Home() {
           </p>
 
           <Button asChild className="btn-primary max-sm:w-full">
-            <Link href="/interview">Start an Interview</Link>
+            <Link href="/interview">Create Mock Interview</Link>
           </Button>
         </div>
 
@@ -52,9 +60,27 @@ async function Home() {
         />
       </section>
 
-      <section className="flex flex-col gap-6 mt-8">
-        <h2>Your Interviews</h2>
+      <h2>Your Interviews</h2>
+          { interviewlists.length ?
+              interviewlists.map((each) => (
+                <InterviewList 
+                  key={each.id}
+                  id={each.id}
+                  role={each.role}
+                  companyName={each.companyName}
+                  overallFeedback={each.overallFeedback}
+                  averageScore={each.averageScore}
+                  totalInterviewsGenerated={each.totalInterviewsGenerated}
+                  totalInterviewsTaken={each.totalInterviewsTaken}
+                  createdAt={each.createdAt}
+                />
+              ))
+              :
+              <p>You do not have any interviews!</p>
+            }
 
+      {/* <section className="flex flex-col gap-6 mt-8">
+        <h2>Your Interviews</h2>
         <div className="interviews-section">
           {hasPastInterviews ? (
             userInterviews?.map((interview) => (
@@ -72,9 +98,9 @@ async function Home() {
             <p>You haven&apos;t taken any interviews yet</p>
           )}
         </div>
-      </section>
+      </section> */}
 
-      <section className="flex flex-col gap-6 mt-8">
+      {/* <section className="flex flex-col gap-6 mt-8">
         <h2>Take Interviews</h2>
 
         <div className="interviews-section">
@@ -94,7 +120,7 @@ async function Home() {
             <p>There are no interviews available</p>
           )}
         </div>
-      </section>
+      </section> */}
     </>
   );
 }

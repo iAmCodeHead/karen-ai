@@ -13,10 +13,45 @@ interface Feedback {
   createdAt: string;
 }
 
+interface InterviewParents {
+  id: string;
+  title: string;
+  companyName: string;
+  overallFeedback: string;
+  children: Interview[];
+  createdAt: string;
+}
+
+interface InterviewP {
+  role: string,
+  level: string,
+  isTechnical: boolean,
+  interviewListId: string,
+  type: string,
+  techstack: string[],
+  userid: string,
+}
+
+interface InterviewList {
+  id: string;
+  companyName: string;
+  jobLink: string;
+  level: string;
+  metadata: string;
+  role: string;
+  userid: string;
+  overallFeedback: string;
+  averageScore: number;
+  totalInterviewsGenerated: number;
+  totalInterviewsTaken: number;
+  createdAt: string;
+}
+
 interface Interview {
   id: string;
   role: string;
   level: string;
+  interview_listId: string;
   questions: string[];
   techstack: string[];
   createdAt: string;
@@ -54,6 +89,7 @@ interface AgentProps {
   feedbackId?: string;
   type: "generate" | "interview";
   questions?: string[];
+  interview_listId: string;
 }
 
 interface RouteParams {

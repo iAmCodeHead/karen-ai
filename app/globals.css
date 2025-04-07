@@ -292,6 +292,14 @@
       @apply text-sm font-semibold capitalize;
     }
   }
+
+  .card-interview-list {
+    @apply rounded-2xl min-h-full flex flex-col p-6 relative overflow-hidden gap-10 justify-between;
+
+    .badge-text {
+      @apply text-sm font-semibold capitalize;
+    }
+  }
 }
 
 @utility dark-gradient {
